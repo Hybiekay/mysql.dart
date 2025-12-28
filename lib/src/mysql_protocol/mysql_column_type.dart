@@ -472,6 +472,13 @@ Tuple2<dynamic, int> parseBinaryColumnData(
         final yearValue = data.getUint16(startOffset, Endian.little);
         return Tuple2(yearValue.toString(), 2);
       }
+
+    case mysqlColumnTypeJson:
+      {
+        // MySQL JSON is sent as length-encoded UTF-8 string
+        final result = buffer.getUtf8LengthEncodedString(startOffset);
+        return Tuple2(result.item1, result.item2);
+      }
   }
 
   throw MySQLProtocolException(
